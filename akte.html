@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Advent - Fallakte (24 Tage)</title>
+  <style>
+    :root{
+      --paper:#f1ebe0;
+      --paper-2:#e7dfd2;
+      --ink:#0b0b0b;
+      --accent:#c1272d;
+      --seal:#1a73e8;
+      --muted:#6b6b6b;
+      --card-shadow: 0 8px 18px rgba(11,11,11,0.12);
+      --mono: "Courier New", Courier, monospace;
+    }
+    html,body{height:100%;}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg,#d6d0c4 0%, #cfc6b7 100%);
+      color:var(--ink);
+      padding:36px;
+      box-sizing:border-box;
+    }
+
+    .file {
+      max-width:1100px;
+      margin:0 auto;
+      background: linear-gradient(180deg, var(--paper) 0%, var(--paper-2) 100%);
+      border-radius:8px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+      padding:28px;
+      border:1px solid rgba(0,0,0,0.06);
+    }
+
+    .header{display:flex;gap:20px;align-items:center;border-bottom:2px dashed rgba(0,0,0,0.06);padding-bottom:14px;margin-bottom:18px;}
+    .case-meta{flex:1;}
+    .case-meta h1{margin:0;font-size:22px;letter-spacing:1px;}
+    .case-meta p{margin:4px 0;color:var(--muted);font-size:14px}
+
+    .case-tags{text-align:right;min-width:200px;}
+    .stempel{display:inline-block;font-family:var(--mono);font-weight:700;letter-spacing:2px;padding:8px 12px;border-radius:4px;transform:rotate(-8deg);box-shadow:0 6px 18px rgba(0,0,0,0.12);margin-bottom:6px;}
+    .stempel.geheim{background:rgba(194,39,45,0.12);color:var(--accent);border:1px solid rgba(194,39,45,0.18)}
+    .stempel.official{background:rgba(26,115,232,0.08);color:var(--seal);border:1px solid rgba(26,115,232,0.12)}
+
+    .grid{display:grid;grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));gap:16px;margin-top:8px;}
+
+    a.card{
+      text-decoration:none;color:inherit;
+      background:linear-gradient(180deg, #fff 0%, #faf7f3 100%);
+      border-radius:10px;padding:12px 14px;
+      box-shadow:var(--card-shadow);
+      border:1px solid rgba(0,0,0,0.04);
+      position:relative;
+      transition:transform .18s ease, box-shadow .18s ease;
+      display:flex;flex-direction:column;gap:8px;min-height:96px;
+    }
+    a.card:hover{transform:translateY(-6px);box-shadow:0 18px 36px rgba(0,0,0,0.18)}
+    .day{font-family:var(--mono);font-weight:700;font-size:20px}
+    .title{font-weight:700;font-size:15px}
+    .meta{font-size:12px;color:var(--muted);}
+    .lock{position:absolute;right:12px;top:12px;font-family:var(--mono);color:var(--muted);background:rgba(0,0,0,0.03);padding:6px 8px;border-radius:6px;border:1px solid rgba(0,0,0,0.04)}
+
+    @media (max-width:560px){.case-tags{display:none}.grid{grid-template-columns: repeat(2, 1fr)}}
+  </style>
+</head>
+<body>
+  <main class="file">
+    <header class="header">
+      <div class="case-meta">
+        <h1>FALLAKTE: Advent - Sonderermittlung 24/25</h1>
+        <p>Bearbeiter: Inspektor/in Odentief · Abteilung: Weihnachtsangelegenheiten · Status: Offen</p>
+        <p style="margin-top:8px;font-size:13px;color:var(--muted)">Jeden Tag ein Beweisstück öffnen – führt zu einem neuen Beweisstück.</p>
+      </div>
+      <div class="case-tags">
+        <div class="stempel geheim">GEHEIM</div>
+        <div class="stempel official">AKT: 24/ADVENT</div>
+      </div>
+    </header>
+
+    <div style="margin:12px 0 20px 0;">
+  <div style="font-size:13px;margin-bottom:6px">
+    Ermittlungsfortschritt: <span id="progressText">0 / 24 Tage</span>
+  </div>
+  <div style="background:#ccc;border-radius:6px;overflow:hidden;height:14px;">
+    <div id="progressBar" style="height:100%;width:0%;background:#1ecb4f;transition:0.4s;"></div>
+  </div>
+</div>
+
+
+    <section class="grid">
+      <!-- Jede Karte verweist auf eine Unterseite (z. B. tag01.html) -->
+      <a href="tage/tag01.html" class="card" data-day="01">
+  <div class="day">Tag 01</div>
+  <div class="title">Tod am Kamin</div>
+  <div class="meta">Beweisstück Nr. 1 · roter Stofffetzen</div>
+  <div class="lock">🔒</div>
+</a>
+
+      <a href="tage/tag02.html" class="card" data-day="01">
+  <div class="day">Tag 02</div>
+  <div class="title">Noch keine Information</div>
+  <div class="meta">Warte auf den richtigen Tag</div>
+  <div class="lock">🔒</div>
+</a>
+      <a href="tage/tag03.html" class="card" data-day="01">
+  <div class="day">Tag 03</div>
+  <div class="title">Noch keine Information</div>
+  <div class="meta">Warte auf den richtigen Tag</div>
+  <div class="lock">🔒</div>
+</a>
+      <a href="tage/tag04.html" class="card" data-day="01">
+  <div class="day">Tag 04</div>
+  <div class="title">Noch keine Information</div>
+  <div class="meta">Warte auf den richtigen Tag</div>
+  <div class="lock">🔒</div>
+</a>
+      <a href="tage/tag05.html" class="card" data-day="01">
+  <div class="day">Tag 05</div>
+  <div class="title">Noch keine Information</div>
+  <div class="meta">Warte auf den richtigen Tag</div>
+  <div class="lock">🔒</div>
+</a>
+      <a href="tage/tag06.html" class="card" data-day="01">
+  <div class="day">Tag 06</div>
+  <div class="title">Noch keine Information</div>
+  <div class="meta">Warte auf den richtigen Tag</div>
+  <div class="lock">🔒</div>
+</a>
+      <a href="tage/tag07.html" class="card" data-day="01">
+  <div class="day">Tag 07</div>
+  <div class="title">Noch keine Information</div>
+  <div class="meta">Warte auf den richtigen Tag</div>
+  <div class="lock">🔒</div>
+</a>
+      <a href="tage/tag08.html" class="card" data-day="01">
+  <div class="day">Tag 08</div>
+  <div class="title">Noch keine Information</div>
+  <div class="meta">Warte auf den richtigen Tag</div>
+  <div class="lock">🔒</div>
+</a>
+      <a href="tage/tag09.html" class="card" data-day="01">
+  <div class="day">Tag 09</div>
+  <div class="title">Noch keine Information</div>
+  <div class="meta">Warte auf den richtigen Tag</div>
+  <div class="lock">🔒</div>
+</a>
+      <a href="tage/tag10.html" class="card" data-day="01">
+  <div class="day">Tag 10</div>
+  <div class="title">Noch keine Information</div>
+  <div class="meta">Warte auf den richtigen Tag</div>
+  <div class="lock">🔒</div>
+</a>
+      <a href="tage/tag11.html" class="card" data-day="01">
+  <div class="day">Tag 11</div>
+  <div class="title">Noch keine Information</div>
+  <div class="meta">Warte auf den richtigen Tag</div>
+  <div class="lock">🔒</div>
+</a>
+      <a href="tage/tag12.html" class="card" data-day="01">
+  <div class="day">Tag 12</div>
+  <div class="title">Noch keine Information</div>
+  <div class="meta">Warte auf den richtigen Tag</div>
+  <div class="lock">🔒</div>
+</a>
+      <a href="tage/tag13.html" class="card" data-day="01">
+  <div class="day">Tag 13</div>
+  <div class="title">Noch keine Information</div>
+  <div class="meta">Warte auf den richtigen Tag</div>
+  <div class="lock">🔒</div>
+</a>
+      <a href="tage/tag14.htmEl" class="card" data-day="01">
+  <div class="day">Tag 14</div>
+  <div class="title">Noch keine Information</div>
+  <div class="meta">Warte auf den richtigen Tag</div>
+  <div class="lock">🔒</div>
+</a>
+      <a href="tage/tag15.html" class="card" data-day="01">
+  <div class="day">Tag 15</div>
+  <div class="title">Noch keine Information</div>
+  <div class="meta">Warte auf den richtigen Tag</div>
+  <div class="lock">🔒</div>
+</a>
+      <a href="tage/tag16.html" class="card" data-day="01">
+  <div class="day">Tag 16</div>
+  <div class="title">Noch keine Information</div>
+  <div class="meta">Warte auf den richtigen Tag</div>
+  <div class="lock">🔒</div>
+</a>
+     <a href="tage/tag17.html" class="card" data-day="01">
+  <div class="day">Tag 17</div>
+  <div class="title">Noch keine Information</div>
+  <div class="meta">Warte auf den richtigen Tag</div>
+  <div class="lock">🔒</div>
+</a>
+      <a href="tage/tag18.html" class="card" data-day="01">
+  <div class="day">Tag 18</div>
+  <div class="title">Noch keine Information</div>
+  <div class="meta">Warte auf den richtigen Tag</div>
+  <div class="lock">🔒</div>
+</a>
+      <a href="tage/tag19.html" class="card" data-day="01">
+  <div class="day">Tag 19</div>
+  <div class="title">Noch keine Information</div>
+  <div class="meta">Warte auf den richtigen Tag</div>
+  <div class="lock">🔒</div>
+</a>
+      <a href="tage/tag20.html" class="card" data-day="01">
+  <div class="day">Tag 20</div>
+  <div class="title">Noch keine Information</div>
+  <div class="meta">Warte auf den richtigen Tag</div>
+  <div class="lock">🔒</div>
+</a>
+      <a href="tage/tag21.html" class="card" data-day="01">
+  <div class="day">Tag 21</div>
+  <div class="title">Noch keine Information</div>
+  <div class="meta">Warte auf den richtigen Tag</div>
+  <div class="lock">🔒</div>
+</a>
+      <a href="tage/tag22.html" class="card" data-day="01">
+  <div class="day">Tag 22</div>
+  <div class="title">Noch keine Information</div>
+  <div class="meta">Warte auf den richtigen Tag</div>
+  <div class="lock">🔒</div>
+</a>
+      <a href="tage/tag23.html" class="card" data-day="01">
+  <div class="day">Tag 23</div>
+  <div class="title">Noch keine Information</div>
+  <div class="meta">Warte auf den richtigen Tag</div>
+  <div class="lock">🔒</div>
+</a>
+      <a href="tage/tag24.html" class="card" data-day="01">
+  <div class="day">Tag 24</div>
+  <div class="title">Noch keine Information</div>
+  <div class="meta">Warte auf den richtigen Tag</div>
+  <div class="lock">🔒</div>
+</a>
+    </section>
+  </main>
+  <script>
+  // 🔐 Aktueller Benutzer aus deinem Login-System
+  const currentUser = localStorage.getItem("currentUser");
+  if (!currentUser) {
+    alert("Bitte zuerst einloggen.");
+    location.href = "../Placeholder.html"; // ggf. Pfad anpassen
+  }
+
+  const userKey = "doneDays_" + currentUser;
+
+  const cards = document.querySelectorAll(".card");
+  let doneDays = JSON.parse(localStorage.getItem(userKey)) || [];
+
+  // 📅 HEUTIGES DATUM (nur 1.–24. Dez erlaubt)
+  const today = new Date();
+  const month = today.getMonth() + 1; // Dezember = 12
+  const allowedDay = (month === 12) ? today.getDate() : 0;
+
+  cards.forEach(card => {
+    const day = parseInt(card.dataset.day);
+    const lock = card.querySelector(".lock");
+
+    // ✅ bereits erledigt → Haken anzeigen
+    if (doneDays.includes(day)) {
+      markDone(card);
+      return;
+    }
+
+    // 🔒 Zukunft → gesperrt
+    if (day > allowedDay) {
+      card.addEventListener("click", e => {
+        e.preventDefault();
+        alert("Dieser Tag ist noch verschlossen.");
+      });
+    } 
+    // 🔓 Heute oder früher → freischaltbar
+    else {
+      card.addEventListener("click", () => {
+        if (!doneDays.includes(day)) {
+          doneDays.push(day);
+          localStorage.setItem(userKey, JSON.stringify(doneDays));
+        }
+      });
+    }
+  });
+
+  function markDone(card){
+    const lock = card.querySelector(".lock");
+    if (lock) lock.remove();
+
+    const check = document.createElement("div");
+    check.className = "checkmark";
+    check.innerHTML = "✔";
+    card.appendChild(check);
+  }
+
+  // 📊 Fortschrittsbalken aktualisieren
+  function updateProgress(){
+    const count = doneDays.length;
+    document.getElementById("progressText").textContent = `${count} / 24 Tage`;
+    document.getElementById("progressBar").style.width = (count / 24 * 100) + "%";
+  }
+
+  updateProgress();
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verhörraum | Fall: Auf der Flucht</title>
+  <style>
+    /* ---------- Layout & Stil ---------- */
+    body {
+      background-color: #f1ebe0;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .chat-container {
+      background: rgba(20, 20, 20, 0.9);
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 600px;
+      padding: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .chat-box {
+      min-height: 300px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .msg {
+      padding: 8px 12px;
+      border-radius: 10px;
+      margin: 8px 0;
+      max-width: 80%;
+      line-height: 1.4;
+    }
+
+    .msg.bot {
+      background: #2d2d2d;
+      align-self: flex-start;
+    }
+
+    .msg.user {
+      background: #004c97;
+      align-self: flex-end;
+    }
+
+    .choices {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .choices button {
+      background: #004c97;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-size: 15px;
+    }
+
+    .choices button:hover {
+      background: #0073e6;
+    }
+
+    a.akte-link {
+      display: inline-block;
+      margin-top: 15px;
+      color: #00ffcc;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    a.akte-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Scrollbar */
+    .chat-box::-webkit-scrollbar {
+      width: 8px;
+    }
+    .chat-box::-webkit-scrollbar-thumb {
+      background: #333;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="chat-container">
+    <div id="chat-box" class="chat-box"></div>
+    <div id="choices" class="choices"></div>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById("chat-box");
+    const choicesContainer = document.getElementById("choices");
+
+    function addMessage(text, sender = "bot") {
+      const msg = document.createElement("div");
+      msg.classList.add("msg", sender);
+      msg.textContent = text;
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function clearChoices() {
+      choicesContainer.innerHTML = "";
+    }
+
+    function addChoices(choices) {
+      clearChoices();
+      choices.forEach(choice => {
+        const btn = document.createElement("button");
+        btn.textContent = choice.text;
+        btn.onclick = choice.action;
+        choicesContainer.appendChild(btn);
+      });
+    }
+
+    // --- SPIELSTART ---
+    addMessage("🕵️ Ermittler: Wir haben Sie am Tatabend in der Nähe des Hafens gesehen.");
+    setTimeout(() => {
+      addMessage("👤 Verdächtiger: Sie irren sich. Ich war gar nicht dort!");
+      showFirstChoices();
+    }, 1500);
+
+    function showFirstChoices() {
+      addChoices([
+        { text: "1️⃣ Wirklich? Ihr Handy war in der Funkzelle dort.", action: path1 },
+        { text: "2️⃣ Haben Sie Zeugen für Ihr Alibi?", action: path2 },
+        { text: "3️⃣ Bleiben Sie ruhig, erzählen Sie, wo Sie wirklich waren.", action: path3 }
+      ]);
+    }
+
+    function path1() {
+      addMessage("Wirklich? Ihr Handy war in der Funkzelle dort.", "user");
+      addMessage("👤 Verdächtiger: Das kann nicht sein... vielleicht hatte ich es verloren.");
+      addChoices([
+        { text: "📱 Also haben Sie es verloren? Wann genau?", action: confessionPath },
+        { text: "🧩 Wir haben auch Videoaufnahmen.", action: failPath }
+      ]);
+    }
+
+    function path2() {
+      addMessage("Haben Sie Zeugen für Ihr Alibi?", "user");
+      addMessage("👤 Verdächtiger: Meine Freundin... aber sie wird nichts sagen.");
+      addChoices([
+        { text: "💔 Sie deckt Sie, nicht wahr?", action: confessionPath },
+        { text: "🕵️ Wir können sie vorladen.", action: failPath }
+      ]);
+    }
+
+    function path3() {
+      addMessage("Bleiben Sie ruhig, erzählen Sie, wo Sie wirklich waren.", "user");
+      addMessage("👤 Verdächtiger: Ich... ich war am Lagerhaus, aber nur kurz!");
+      setTimeout(() => confessionPath(), 1000);
+    }
+
+    function confessionPath() {
+      addMessage("👤 Verdächtiger: Ja, ich war dort... aber ich wollte nur helfen!");
+      clearChoices();
+      setTimeout(() => {
+        addMessage("🕵️ Ermittler: Geständnis erhalten. Fallabschnitt abgeschlossen.");
+        addMessage("📄 Akte freigeschaltet – öffne das nächste Dokument.");
+
+        const link = document.createElement("a");
+        link.href = "../akte.html";
+        link.textContent = ">> Akte öffnen <<";
+        link.classList.add("akte-link");
+        chatBox.appendChild(link);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }, 1500);
+    }
+
+    function failPath() {
+      addMessage("👤 Verdächtiger: Ohne Anwalt sage ich gar nichts mehr!");
+      clearChoices();
+      setTimeout(() => {
+        addMessage("💬 Verhör abgebrochen. Versuche es erneut.");
+        addChoices([{ text: "🔁 Noch einmal beginnen", action: () => location.reload() }]);
+      }, 1500);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Code-Knacker | Login</title>
+  <style>
+    body {
+      background-color: #0a0a0a;
+      color: #00ffcc;
+      font-family: "Courier New", monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .terminal {
+      background: rgba(10, 20, 20, 0.9);
+      border: 1px solid #00ffcc;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 600px;
+      padding: 25px;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+      text-align: center;
+    }
+
+    .headline {
+      font-size: 1.2rem;
+      color: #00ffcc;
+      margin-bottom: 20px;
+    }
+
+    .code-box {
+      background: #001a1a;
+      border: 1px solid #004c4c;
+      padding: 20px;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+    }
+
+    input {
+      background: #000;
+      color: #00ffcc;
+      border: 1px solid #00ffcc;
+      border-radius: 6px;
+      padding: 8px;
+      width: 80%;
+      margin-bottom: 10px;
+      font-family: inherit;
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    button {
+      background: #00ffcc;
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #00bfa5;
+    }
+
+    .result {
+      margin-top: 15px;
+      min-height: 24px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="terminal">
+    <div class="headline">💻 Abteilung Digitale Forensik</div>
+
+    <div class="code-box" id="authBox">
+      <p><strong>Login / Registrierung</strong></p>
+      <input type="text" id="username" placeholder="Benutzername" />
+      <input type="password" id="password" placeholder="Passwort" />
+      <br />
+      <button onclick="register()">Registrieren</button>
+      <button onclick="login()">Login</button>
+      <div class="result" id="authResult"></div>
+    </div>
+  </div>
+
+  <script>
+    const authResult = document.getElementById("authResult");
+
+    function register() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (!username || !password) {
+        authResult.textContent = "❗ Bitte alle Felder ausfüllen.";
+        return;
+      }
+
+      if (localStorage.getItem("user_" + username)) {
+        authResult.textContent = "❌ Benutzer existiert bereits.";
+        return;
+      }
+
+      const userData = { password: password };
+      localStorage.setItem("user_" + username, JSON.stringify(userData));
+      authResult.textContent = "✅ Registrierung erfolgreich. Bitte einloggen.";
+    }
+
+    function login() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const storedUser = localStorage.getItem("user_" + username);
+
+      if (!storedUser) {
+        authResult.textContent = "❌ Benutzer nicht gefunden.";
+        return;
+      }
+
+      const userData = JSON.parse(storedUser);
+
+      if (userData.password !== password) {
+        authResult.textContent = "❌ Falsches Passwort.";
+        return;
+      }
+
+      // ✅ Globaler Login für das Advent-System
+      localStorage.setItem("currentUser", username);
+
+      // ✅ Weiterleitung zur Advent-Fallakte
+      location.href = "chat.html";
+    }
+  </script>
+  <script>
+function login() {
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const storedUser = localStorage.getItem("user_" + username);
+
+  if (!storedUser) {
+    authResult.textContent = "❌ Benutzer nicht gefunden.";
+    return;
+  }
+
+  const userData = JSON.parse(storedUser);
+
+  if (userData.password !== password) {
+    authResult.textContent = "❌ Falsches Passwort.";
+    return;
+  }
+
+  // ✅ User global setzen (für dein ganzes System)
+  localStorage.setItem("currentUser", username);
+
+  // ✅ Prüfen: War der User schon einmal im Chat?
+  const firstKey = "firstLoginDone_" + username;
+  const hasVisitedChat = localStorage.getItem(firstKey);
+
+  if (!hasVisitedChat) {
+    // 🔹 ERSTER Login → Chat zeigen
+    localStorage.setItem(firstKey, "true");
+    location.href = "chat.html";
+  } else {
+    // 🔹 Jeder weitere Login → direkt zum Chat
+    location.href = "akte.html";
+  }
+}
+</script>
+
+</body>
+</html>

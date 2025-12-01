@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DNA-Analyse | Genetische Zuordnung</title>
+  <style>
+    body {
+      background-color: #0a0a0a;
+      color: #00ffcc;
+      font-family: "Courier New", monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h2 {
+      margin-top: 20px;
+      color: #00ffcc;
+      text-shadow: 0 0 10px #00bfa5;
+    }
+
+    p {
+      max-width: 600px;
+      text-align: center;
+    }
+
+    .container {
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 30px;
+      width: 90%;
+      max-width: 800px;
+    }
+
+    .item, .dropzone {
+      width: 150px;
+      height: 150px;
+      border: 2px dashed #00ffcc;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 10px;
+      transition: 0.2s;
+    }
+
+    .item {
+      background: rgba(0,255,204,0.1);
+      cursor: grab;
+    }
+
+    .item:active {
+      cursor: grabbing;
+    }
+
+    .dropzone {
+      background: rgba(0,255,204,0.05);
+    }
+
+    .dropzone.hover {
+      background: rgba(0,255,204,0.2);
+      border-style: solid;
+    }
+
+    .success {
+      background: rgba(0,255,100,0.2);
+      border-color: #00ff66;
+    }
+
+    .fail {
+      background: rgba(255,50,50,0.2);
+      border-color: #ff4444;
+    }
+
+    #result {
+      margin-top: 30px;
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    a.akte-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: #00ffcc;
+      text-decoration: none;
+      font-weight: bold;
+      background: rgba(0,255,204,0.1);
+      padding: 8px 12px;
+      border-radius: 8px;
+    }
+
+    a.akte-link:hover {
+      text-decoration: underline;
+      background: rgba(0,255,204,0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🧬 DNA-Analyse: Genetische Zuordnung</h2>
+  <p>Ordne die DNA-Proben den richtigen Individuen zu.  
+  <br>Nur die korrekte Kombination entschlüsselt die genetische Wahrheit.</p>
+
+  <div class="container">
+    <!-- DNA-Proben -->
+    <div class="item" draggable="true" id="probeA">🧫 DNA-Probe A<br>(Haarwurzel)</div>
+    <div class="item" draggable="true" id="probeB">🧬 DNA-Probe B<br>(Speichelspur)</div>
+    <div class="item" draggable="true" id="probeC">🧪 DNA-Probe C<br>(Blutprobe)</div>
+  </div>
+
+  <div class="container">
+    <!-- Individuen -->
+    <div class="dropzone" id="anna">Anna Müller</div>
+    <div class="dropzone" id="ben">Ben Krause</div>
+    <div class="dropzone" id="sofia">Sofia Lehmann</div>
+  </div>
+
+  <div id="result"></div>
+
+  <script>
+    const items = document.querySelectorAll('.item');
+    const dropzones = document.querySelectorAll('.dropzone');
+    const result = document.getElementById('result');
+    let correctAssignments = 0;
+
+    items.forEach(item => {
+      item.addEventListener('dragstart', dragStart);
+    });
+
+    dropzones.forEach(zone => {
+      zone.addEventListener('dragover', dragOver);
+      zone.addEventListener('dragleave', dragLeave);
+      zone.addEventListener('drop', dropItem);
+    });
+
+    function dragStart(e) {
+      e.dataTransfer.setData('text', e.target.id);
+    }
+
+    function dragOver(e) {
+      e.preventDefault();
+      this.classList.add('hover');
+    }
+
+    function dragLeave() {
+      this.classList.remove('hover');
+    }
+
+    function dropItem(e) {
+      e.preventDefault();
+      this.classList.remove('hover');
+
+      const itemId = e.dataTransfer.getData('text');
+      const item = document.getElementById(itemId);
+
+      // Logik: Richtige Zuordnung prüfen
+      if (
+        (this.id === 'anna' && itemId === 'probeA') ||
+        (this.id === 'ben' && itemId === 'probeB') ||
+        (this.id === 'sofia' && itemId === 'probeC')
+      ) {
+        this.classList.add('success');
+        this.textContent += " ✓";
+        item.style.display = 'none';
+        correctAssignments++;
+        checkCompletion();
+      } else {
+        this.classList.add('fail');
+        result.textContent = "❌ Falsche Zuordnung. Versuch es erneut.";
+        setTimeout(() => this.classList.remove('fail'), 1000);
+      }
+    }
+
+    function checkCompletion() {
+      if (correctAssignments === 3) {
+        result.innerHTML = "✅ Alle DNA-Proben korrekt zugeordnet!<br>Die genetische Analyse ist abgeschlossen.";
+        setTimeout(() => {
+          result.innerHTML += "<br><br>📂 <a class='akte-link' href='../akte.html'>> Bericht öffnen <<</a>";
+        }, 1500);
+      }
+    }
+  </script>
+
+</body>
+</html>
+
+// 1 Weihnachtsmann am Boden 2 Rentier 3 Unbekannte Frau  

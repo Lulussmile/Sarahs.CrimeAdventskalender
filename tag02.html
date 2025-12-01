@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Falltag 01 – Der tote Weihnachtsmann</title>
+  <style>
+    :root {
+      --paper: #f1ebe0;
+      --ink: #111;
+      --accent: #c1272d;
+      --muted: #666;
+    }
+    body {
+      margin: 0;
+      font-family: 'Courier New', monospace;
+      background: var(--paper);
+      color: var(--ink);
+      height: 100vh;
+      overflow: hidden;
+    }
+    .scene {
+      position: relative;
+      width: 100%;
+      height: calc(100% - 160px);
+      background: url('tatort_tag01.jpg') center/cover no-repeat;
+      border: 4px solid rgba(0, 0, 0, 0.2);
+    }
+    .hotspot {
+      position: absolute;
+      width: 34px;
+      height: 34px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      border: 2px solid #fff;
+      transition: transform 0.2s;
+    }
+    .hotspot:hover {
+      transform: scale(1.2);
+    }
+
+    .popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .popup-content {
+      background: var(--paper);
+      border-radius: 8px;
+      padding: 24px;
+      max-width: 520px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      animation: fadeIn 0.3s ease;
+    }
+    .popup-content h2 {
+      margin-top: 0;
+      color: var(--accent);
+    }
+    .popup-content p {
+      font-size: 15px;
+      line-height: 1.5;
+      color: var(--ink);
+    }
+    .close-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+    .close-btn:hover {
+      background: #a31f24;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .zurueck {
+      position: absolute;
+      bottom: 18px;
+      left: 18px;
+      background: rgba(255,255,255,0.8);
+      text-decoration: none;
+      padding: 6px 12px;
+      color: #000;
+      border-radius: 6px;
+      border: 1px solid rgba(0,0,0,0.2);
+      font-size: 14px;
+    }
+    .zurueck:hover { background: #fff; }
+  </style>
+</head>
+<body>
+  <div class="scene">
+    <div class="hotspot" style="top: 60%; left: 45%;" data-target="popupA">A</div>
+    <div class="hotspot" style="top: 40%; left: 70%;" data-target="popupB">B</div>
+    <div class="hotspot" style="top: 75%; left: 25%;" data-target="popupC">C</div>
+
+    <a href="../akte.html" class="zurueck">← Zurück zur Fallakte</a>
+  </div>
+
+  <div class="popup" id="popupA">
+    <div class="popup-content">
+      <h2>Beweisstück A – Rote Stofffetzen</h2>
+      <p>Am Kamin und an der Eingangstür wurden rote Stofffasern gefunden. Erste Analyse legt nahe, dass sie von schwerem Wollstoff stammen – möglicherweise vom Mantel des Opfers. An der Faser haften winzige Spuren von Ruß.</p>
+      <button class="close-btn" data-close>Schließen</button>
+    </div>
+  </div>
+
+  <div class="popup" id="popupB">
+    <div class="popup-content">
+      <h2>Beweisstück B – Fußspuren im Schnee</h2>
+      <p>Vom Hintereingang bis zum Kaminfenster führen tiefe Stiefelabdrücke. Profilgröße etwa 46. Der Abstand der Schritte deutet auf eine Person mit kräftigem Gang – nicht das Profil des Weihnachtsmanns selbst.</p>
+      <button class="close-btn" data-close>Schließen</button>
+    </div>
+  </div>
+
+  <div class="popup" id="popupC">
+    <div class="popup-content">
+      <h2>Beweisstück C – Geruch von Zimt & Rauch</h2>
+      <p>Im Raum liegt ein intensiver Geruch nach Zimt und verbranntem Wachs. Vermutlich wurde kurz vor dem Vorfall eine Kerze entzündet. Spuren deuten auf einen Versuch hin, die Szene zu manipulieren.</p>
+      <button class="close-btn" data-close>Schließen</button>
+    </div>
+  </div>
+
+  <!-- Ermittlungsformular -->
+  <div id="ermittlungsformular" style="position:absolute;bottom:0;width:100%;background:rgba(241,235,224,0.95);border-top:1px solid rgba(0,0,0,0.2);padding:20px 0;text-align:center;font-family:'Courier New',monospace;">
+    <h2 style="margin:0 0 10px 0;color:#111;">Ermittlungsnotiz – Verdacht zum Tathergang</h2>
+    <p style="margin:0 0 12px 0;color:#333;">Wer könnte für den Tod des Weihnachtsmanns verantwortlich sein?</p>
+    
+    <input id="antwort" type="text" placeholder="Ihre Vermutung eingeben ..." 
+           style="width:60%;max-width:400px;padding:8px;border:1px solid #999;border-radius:4px;background:#fff;font-family:'Courier New',monospace;font-size:15px;">
+    <button id="pruefenBtn" 
+            style="margin-left:8px;padding:8px 14px;border:none;border-radius:4px;background:#c1272d;color:#fff;cursor:pointer;font-family:'Courier New',monospace;">Antwort prüfen</button>
+    
+    <p id="rueckmeldung" style="margin-top:15px;color:#333;font-style:italic;"></p>
+  </div>
+
+  <script>
+    const hotspots = document.querySelectorAll('.hotspot');
+    const popups = document.querySelectorAll('.popup');
+    const closeButtons = document.querySelectorAll('[data-close]');
+
+    hotspots.forEach(h => {
+      h.addEventListener('click', () => {
+        const target = document.getElementById(h.dataset.target);
+        if (target) target.style.display = 'flex';
+      });
+    });
+
+    closeButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.closest('.popup').style.display = 'none';
+      });
+    });
+
+    popups.forEach(p => {
+      p.addEventListener('click', e => {
+        if (e.target === p) p.style.display = 'none';
+      });
+    });
+
+    // Antwortprüfung
+    const pruefenBtn = document.getElementById('pruefenBtn');
+    const rueckmeldung = document.getElementById('rueckmeldung');
+    
+    pruefenBtn.addEventListener('click', () => {
+      const eingabe = document.getElementById('antwort').value.trim().toLowerCase();
+      const richtigeAntworten = ['wichtel','ein wichtel','ein roter wichtel','verkleideter wichtel'];
+      
+      if (richtigeAntworten.includes(eingabe)) {
+        rueckmeldung.textContent = '✔️ Korrekt – Spuren deuten auf einen Wichtel in roter Kleidung hin.';
+        rueckmeldung.style.color = '#0b6b1c';
+      } else if (eingabe === '') {
+        rueckmeldung.textContent = 'Bitte geben Sie eine Vermutung ein.';
+        rueckmeldung.style.color = '#333';
+      } else {
+        rueckmeldung.textContent = 'Hinweis notiert. Vielleicht übersehen Sie etwas am Kamin …';
+        rueckmeldung.style.color = '#a31f24';
+      }
+    });
+  </script>
+</body>
+</html>

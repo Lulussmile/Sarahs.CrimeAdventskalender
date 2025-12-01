@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Polizei Login – Ermittlungsdatenbank</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="login-bg">
+  <div class="login-container">
+    <h1>🕵️ Zugang zur Ermittlungsdatenbank</h1>
+    <form id="loginForm">
+      <label for="username">Ermittlername</label>
+      <input type="text" id="username" placeholder="z. B. Kommissar Winter" required />
+
+      <label for="password">Passwort</label>
+      <input type="password" id="password" placeholder="••••••" required />
+
+      <button type="submit">Anmelden</button>
+      <p id="loginMessage"></p>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const message = document.getElementById('loginMessage');
+
+      // Beispielhafte simple Prüfung
+      if (username && password) {
+        // Ermittlername wird im LocalStorage gespeichert
+        localStorage.setItem('ermittlerName', username);
+
+        message.textContent = 'Zugang bestätigt... Leite weiter 🔍';
+        message.style.color = '#00ff88';
+
+        setTimeout(() => {
+          window.location.href = 'chat.html';
+        }, 1500);
+      } else {
+        message.textContent = 'Zugang verweigert – unvollständige Angaben ❌';
+        message.style.color = '#ff4444';
+      }
+    });
+  </script>
+</body>
+</html>

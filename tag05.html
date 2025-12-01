@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Code-Knacker | Fall: Auf der Flucht</title>
+  <style>
+    body {
+      background-color: #0a0a0a;
+      color: #00ffcc;
+      font-family: "Courier New", monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .terminal {
+      background: rgba(10, 20, 20, 0.9);
+      border: 1px solid #00ffcc;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 600px;
+      padding: 25px;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+      text-align: center;
+    }
+
+    .headline {
+      font-size: 1.2rem;
+      color: #00ffcc;
+      margin-bottom: 20px;
+    }
+
+    .code-box {
+      background: #001a1a;
+      border: 1px solid #004c4c;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 1.1rem;
+    }
+
+    input {
+      background: #000;
+      color: #00ffcc;
+      border: 1px solid #00ffcc;
+      border-radius: 6px;
+      padding: 8px;
+      width: 70%;
+      margin-bottom: 15px;
+      font-family: inherit;
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    button {
+      background: #00ffcc;
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #00bfa5;
+    }
+
+    .result {
+      margin-top: 15px;
+      min-height: 24px;
+    }
+
+    a.akte-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: #00ffcc;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    a.akte-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="terminal">
+    <div class="headline">💻 Abteilung Digitale Forensik</div>
+    <div class="code-box">
+      <p>Eine verschlüsselte Nachricht wurde gefunden:</p>
+      <p><strong>"Bsuivs Xjfmband xbs vobsujh"</strong></p>
+      <p>Hinweis: <em>Der Täter nutzt eine einfache Buchstabenverschiebung (Caesar -1).</em></p>
+    </div>
+
+    <input type="text" id="userInput" placeholder="Entschlüsselte Nachricht eingeben..." />
+    <br />
+    <button onclick="checkCode()">Code prüfen</button>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function checkCode() {
+      const input = document.getElementById("userInput").value.trim().toLowerCase();
+      const result = document.getElementById("result");
+
+      const correct = "arthur wieland war unartig".toLowerCase();
+
+      if (input === correct) {
+        result.innerHTML =
+          "✅ <b>Entschlüsselt!</b> Arthur Wieland... das taucht in den Akten auf. Verdächtig!";
+        setTimeout(() => {
+          result.innerHTML +=
+            "<br><br>📄 <a class='akte-link' href='../akte.html'>> Akte öffnen <<</a>";
+        }, 1500);
+      } else if (input === "") {
+        result.textContent = "❗ Bitte gib einen Code ein.";
+      } else {
+        result.textContent = "❌ Falscher Code. Überprüfe den Hinweis erneut.";
+      }
+    }
+  </script>
+</body>
+</html>
