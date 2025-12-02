@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Verhörraum | Fall: Auf der Flucht</title>
+  <title>Verhörraum | Tag 3 – Der unschuldige Wichtel</title>
+
   <style>
-    /* ---------- Layout & Stil ---------- */
     body {
       background-color: #f1ebe0;
       color: #fff;
@@ -88,15 +88,6 @@
     a.akte-link:hover {
       text-decoration: underline;
     }
-
-    /* Scrollbar */
-    .chat-box::-webkit-scrollbar {
-      width: 8px;
-    }
-    .chat-box::-webkit-scrollbar-thumb {
-      background: #333;
-      border-radius: 4px;
-    }
   </style>
 </head>
 
@@ -110,6 +101,8 @@
     const chatBox = document.getElementById("chat-box");
     const choicesContainer = document.getElementById("choices");
 
+    let askedQuestions = [];
+
     function addMessage(text, sender = "bot") {
       const msg = document.createElement("div");
       msg.classList.add("msg", sender);
@@ -122,79 +115,313 @@
       choicesContainer.innerHTML = "";
     }
 
-    function addChoices(choices) {
+    function gameOver() {
       clearChoices();
-      choices.forEach(choice => {
+      addMessage("🧝‍♂️ Wichtel: Habe ich… etwas falsch gemacht…?", "bot");
+      addMessage("❌ Falsche Frage. Das Verhör muss neu gestartet werden.", "bot");
+
+      const restart = document.createElement("button");
+      restart.textContent = "🔁 Neustart";
+      restart.onclick = () => location.reload();
+      choicesContainer.appendChild(restart);
+    }
+
+    function addQuestion(stepLabel, options) {
+      addMessage(stepLabel, "bot");
+      clearChoices();
+
+      options.forEach(opt => {
         const btn = document.createElement("button");
-        btn.textContent = choice.text;
-        btn.onclick = choice.action;
+        btn.textContent = opt.text;
+        btn.onclick = () => {
+          askedQuestions.push(opt.text);
+          addMessage("🕵️ " + opt.text, "user");
+          if (opt.correct) {
+            if (opt.reply) addMessage(opt.reply, "bot");
+            opt.next();
+          } else {
+            gameOver();
+          }
+        };
         choicesContainer.appendChild(btn);
       });
     }
 
-    // --- SPIELSTART ---
-    addMessage("🕵️ Ermittler: Wir haben Sie am Tatabend in der Nähe des Hafens gesehen.");
+    // -------------------------
+    // START
+    // -------------------------
+    addMessage("🧝‍♂️ Wichtel: Bitte… ich wollte nur heim. Ich habe wirklich nichts getan.");
     setTimeout(() => {
-      addMessage("👤 Verdächtiger: Sie irren sich. Ich war gar nicht dort!");
-      showFirstChoices();
-    }, 1500);
+      addMessage("🕵️ Ermittlerin Frost: Dann helfen Sie uns. Wir beginnen.", "bot");
+      question1();
+    }, 1000);
 
-    function showFirstChoices() {
-      addChoices([
-        { text: "1️⃣ Wirklich? Ihr Handy war in der Funkzelle dort.", action: path1 },
-        { text: "2️⃣ Haben Sie Zeugen für Ihr Alibi?", action: path2 },
-        { text: "3️⃣ Bleiben Sie ruhig, erzählen Sie, wo Sie wirklich waren.", action: path3 }
+    // ==========================
+    // DURCHMISCHTE ANTWORTEN
+    // ==========================
+
+    function question1() {
+      addQuestion("1️⃣ Welche Frage stellen Sie zuerst?",
+      [
+        {
+          text: "Sind Sie stehen geblieben, um die Hütte zu beobachten?",
+          correct: false
+        },
+        {
+          text: "Welchen Weg nehmen Sie normalerweise von der Werkstatt nach Hause?",
+          correct: true,
+          reply: "🧝‍♂️ Immer denselben… direkt an der Hütte des Weihnachtsmanns vorbei.",
+          next: question2
+        },
+        {
+          text: "Warum sind Sie heute nicht zur Arbeit erschienen?",
+          correct: false
+        }
       ]);
     }
 
-    function path1() {
-      addMessage("Wirklich? Ihr Handy war in der Funkzelle dort.", "user");
-      addMessage("👤 Verdächtiger: Das kann nicht sein... vielleicht hatte ich es verloren.");
-      addChoices([
-        { text: "📱 Also haben Sie es verloren? Wann genau?", action: confessionPath },
-        { text: "🧩 Wir haben auch Videoaufnahmen.", action: failPath }
+    function question2() {
+      addQuestion("2️⃣ Wie führen Sie das Gespräch fort?",
+      [
+        {
+          text: "Ist Ihnen an der Hütte an diesem Abend etwas Besonderes aufgefallen?",
+          correct: true,
+          reply: "🧝‍♂️ J-ja… jemand ist hineingelaufen, kurz bevor ich vorbeikam.",
+          next: question3
+        },
+        {
+          text: "Haben Sie in der Hütte nach Lebensmitteln gesucht?",
+          correct: false
+        },
+        {
+          text: "Warum haben Sie die Tür der Hütte nicht geschlossen?",
+          correct: false
+        }
       ]);
     }
 
-    function path2() {
-      addMessage("Haben Sie Zeugen für Ihr Alibi?", "user");
-      addMessage("👤 Verdächtiger: Meine Freundin... aber sie wird nichts sagen.");
-      addChoices([
-        { text: "💔 Sie deckt Sie, nicht wahr?", action: confessionPath },
-        { text: "🕵️ Wir können sie vorladen.", action: failPath }
+    function question3() {
+      addQuestion("3️⃣ Wer könnte in die Hütte gegangen sein?",
+      [
+        {
+          text: "Wen genau haben Sie in die Hütte gehen sehen?",
+          correct: true,
+          reply: "🧝‍♂️ Einen Mann in Rot… ich dachte, es wäre der Weihnachtsmann.",
+          next: question4
+        },
+        {
+          text: "War es vielleicht ein wildes Rentier?",
+          correct: false
+        },
+        {
+          text: "Haben Sie nur eine Silhouette ohne Kleidung gesehen?",
+          correct: false
+        }
       ]);
     }
 
-    function path3() {
-      addMessage("Bleiben Sie ruhig, erzählen Sie, wo Sie wirklich waren.", "user");
-      addMessage("👤 Verdächtiger: Ich... ich war am Lagerhaus, aber nur kurz!");
-      setTimeout(() => confessionPath(), 1000);
+    function question4() {
+      addQuestion("4️⃣ Worauf lenken Sie den Fokus?",
+      [
+        {
+          text: "Kam Ihnen an dieser Person etwas ungewöhnlich vor – Größe, Gang, Haltung?",
+          correct: true,
+          reply: "🧝‍♂️ Jetzt, wo Sie fragen… er wirkte größer. Und schwerer.",
+          next: question5
+        },
+        {
+          text: "Hat der Mann Ihnen zugewunken?",
+          correct: false
+        },
+        {
+          text: "Hatte er eine Einkaufstasche dabei?",
+          correct: false
+        }
+      ]);
     }
 
-    function confessionPath() {
-      addMessage("👤 Verdächtiger: Ja, ich war dort... aber ich wollte nur helfen!");
+    function question5() {
+      addQuestion("5️⃣ Welche Detailfrage bringt die Wahrheit ans Licht?",
+      [
+        {
+          text: "War der Mantel frisch gebügelt?",
+          correct: false
+        },
+        {
+          text: "Konnten Sie am roten Mantel oder Fellsaum etwas Ungewöhnliches erkennen?",
+          correct: true,
+          reply: "🧝‍♂️ Das Fell sah… billiger aus. Fast künstlich.",
+          next: question6
+        },
+        {
+          text: "Hatte er ein Geschenk in der Hand?",
+          correct: false
+        }
+      ]);
+    }
+
+    function question6() {
+      addQuestion("6️⃣ Wie vertiefen Sie die Szene?",
+      [
+        {
+          text: "Haben Sie Weihnachtsmusik gehört?",
+          correct: false
+        },
+        {
+          text: "Haben Sie etwas gehört, nachdem die Person die Hütte betrat?",
+          correct: true,
+          reply: "🧝‍♂️ Ein dumpfes Poltern… nur ganz kurz.",
+          next: question7
+        },
+        {
+          text: "Hat jemand laut 'Ho Ho Ho!' gerufen?",
+          correct: false
+        }
+      ]);
+    }
+
+    function question7() {
+      addQuestion("7️⃣ Warum haben Sie nicht reagiert?",
+      [
+        {
+          text: "Warum sind Sie nicht stehen geblieben, obwohl es merkwürdig war?",
+          correct: true,
+          reply: "🧝‍♂️ Ich dachte, es wäre der echte Weihnachtsmann… da störe ich nie.",
+          next: question8
+        },
+        {
+          text: "Wollten Sie den Mann überraschen?",
+          correct: false
+        },
+        {
+          text: "Haben Sie sich in den Schnee gelegt, um zu lauschen?",
+          correct: false
+        }
+      ]);
+    }
+
+    function question8() {
+      addQuestion("8️⃣ Gab es weitere Personen?",
+      [
+        {
+          text: "Ist Ihnen auf dem Heimweg noch jemand begegnet?",
+          correct: true,
+          reply: "🧝‍♂️ Nein… niemand. Es war unheimlich still.",
+          next: question9
+        },
+        {
+          text: "Sind Ihnen drei Rentiere entgegengekommen?",
+          correct: false
+        },
+        {
+          text: "Haben Sie eine Gruppe Kinder gesehen?",
+          correct: false
+        }
+      ]);
+    }
+
+    function question9() {
+      addQuestion("9️⃣ Warum haben Sie Ihre Beobachtung nicht gemeldet?",
+      [
+        {
+          text: "Weil ich dachte, es sei der echte Weihnachtsmann?",
+          correct: true,
+          reply: "🧝‍♂️ Genau… ich dachte, alles sei normal.",
+          next: question10
+        },
+        {
+          text: "Weil ich Angst hatte, Ärger zu bekommen?",
+          correct: false
+        },
+        {
+          text: "Weil ich keine Lust hatte?",
+          correct: false
+        }
+      ]);
+    }
+
+    function question10() {
+      addQuestion("🔟 Wie ging es weiter?",
+      [
+        {
+          text: "Wann erfuhren Sie zum ersten Mal, dass der Weihnachtsmann verschwunden war?",
+          correct: true,
+          reply: "🧝‍♂️ Später, in der Werkstatt. Dann brach Panik aus.",
+          next: question11
+        },
+        {
+          text: "Haben Sie die Nachricht selbst verbreitet?",
+          correct: false
+        },
+        {
+          text: "Wussten Sie davon, bevor Sie zur Hütte gingen?",
+          correct: false
+        }
+      ]);
+    }
+
+    function question11() {
+      addQuestion("1️⃣1️⃣ Wie schätzen Sie die Person heute ein?",
+      [
+        {
+          text: "Glauben Sie noch, dass es der echte Weihnachtsmann war?",
+          correct: true,
+          reply: "🧝‍♂️ Nein… dafür war er zu groß, zu schwer.",
+          next: question12
+        },
+        {
+          text: "War es vielleicht Ihr Chef aus der Werkstatt?",
+          correct: false
+        },
+        {
+          text: "War es ein Troll im Kostüm?",
+          correct: false
+        }
+      ]);
+    }
+
+    function question12() {
+      addQuestion("1️⃣2️⃣ Und Ihre Schlussfolgerung?",
+      [
+        {
+          text: "Könnte dieser Mann den Weihnachtsmann bereits in seiner Gewalt gehabt haben?",
+          correct: true,
+          reply: "🧝‍♂️ Ja… das fürchte ich.",
+          next: finish
+        },
+        {
+          text: "War das alles nur ein Missverständnis?",
+          correct: false
+        },
+        {
+          text: "Hat der Weihnachtsmann sich vielleicht verkleidet?",
+          correct: false
+        }
+      ]);
+    }
+
+    function finish() {
       clearChoices();
-      setTimeout(() => {
-        addMessage("🕵️ Ermittler: Geständnis erhalten. Fallabschnitt abgeschlossen.");
-        addMessage("📄 Akte freigeschaltet – öffne das nächste Dokument.");
+      addMessage("🕵️ Ermittlerin Frost: Ihre Aussage war entscheidend.", "bot");
+      addMessage("🧝‍♂️ Wichtel: Bitte… finden Sie ihn!", "bot");
 
-        const link = document.createElement("a");
-        link.href = "../akte.html";
-        link.textContent = ">> Akte öffnen <<";
-        link.classList.add("akte-link");
-        chatBox.appendChild(link);
-        chatBox.scrollTop = chatBox.scrollHeight;
-      }, 1500);
+      setTimeout(() => {
+        addMessage("📄 Ihre gewählten Ermittlerfragen:", "bot");
+        askedQuestions.forEach((q, i) => {
+          addMessage((i + 1) + ". " + q, "bot");
+        });
+
+        setTimeout(() => {
+          addMessage("✔ Verhör abgeschlossen. Akte freigeschaltet.", "bot");
+          const link = document.createElement("a");
+          link.href = "../akte.html";
+          link.textContent = ">> Akte öffnen <<";
+          link.classList.add("akte-link");
+          chatBox.appendChild(link);
+        }, 1500);
+      }, 800);
     }
 
-    function failPath() {
-      addMessage("👤 Verdächtiger: Ohne Anwalt sage ich gar nichts mehr!");
-      clearChoices();
-      setTimeout(() => {
-        addMessage("💬 Verhör abgebrochen. Versuche es erneut.");
-        addChoices([{ text: "🔁 Noch einmal beginnen", action: () => location.reload() }]);
-      }, 1500);
-    }
   </script>
 </body>
 </html>
