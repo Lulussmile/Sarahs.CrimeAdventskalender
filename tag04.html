@@ -1,1 +1,368 @@
-Vehör 2
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verhörraum | Tag 4 – Befragung des Nikolaus</title>
+
+  <style>
+    body {
+      background-color: #f1ebe0;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .chat-container {
+      background: rgba(20, 20, 20, 0.9);
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 650px;
+      padding: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .chat-box {
+      min-height: 350px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .msg {
+      padding: 8px 12px;
+      border-radius: 10px;
+      margin: 8px 0;
+      max-width: 90%;
+      line-height: 1.4;
+    }
+
+    .msg.bot {
+      background: #2d2d2d;
+      align-self: flex-start;
+    }
+
+    .msg.user {
+      background: #004c97;
+      align-self: flex-end;
+    }
+
+    .choices {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .choices button {
+      background: #004c97;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-size: 15px;
+    }
+
+    .choices button:hover {
+      background: #0073e6;
+    }
+
+    img.evidence {
+      width: 100%;
+      border-radius: 6px;
+      margin: 10px 0;
+      border: 2px solid #333;
+    }
+
+    a.akte-link {
+      display: inline-block;
+      margin-top: 15px;
+      color: #00ffcc;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    a.akte-link:hover {
+      text-decoration: underline;
+    }
+
+    .chat-box::-webkit-scrollbar { width: 8px; }
+    .chat-box::-webkit-scrollbar-thumb {
+      background: #333;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="chat-container">
+    <div id="chat-box" class="chat-box"></div>
+    <div id="choices" class="choices"></div>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById("chat-box");
+    const choicesContainer = document.getElementById("choices");
+
+    let askedQuestions = [];
+
+    function addMessage(text, sender = "bot") {
+      const msg = document.createElement("div");
+      msg.classList.add("msg", sender);
+      msg.textContent = text;
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function addImage(src) {
+      const img = document.createElement("img");
+      img.src = src;
+      img.classList.add("evidence");
+      chatBox.appendChild(img);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function clearChoices() {
+      choicesContainer.innerHTML = "";
+    }
+
+    function gameOver() {
+      clearChoices();
+      addMessage("🎅 Nikolaus: Was soll das heißen? Ich tu niemandem etwas!", "bot");
+      addMessage("❌ Falsche Frage. Das Verhör muss neu gestartet werden.", "bot");
+
+      const restart = document.createElement("button");
+      restart.textContent = "🔁 Neustart";
+      restart.onclick = () => location.reload();
+      choicesContainer.appendChild(restart);
+    }
+
+    function addQuestion(stepLabel, options) {
+      addMessage(stepLabel, "bot");
+
+      clearChoices();
+      options.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.textContent = opt.text;
+        btn.onclick = () => {
+          askedQuestions.push(opt.text);
+          addMessage("🕵️ " + opt.text, "user");
+          if (opt.correct) {
+            if (opt.reply) addMessage(opt.reply, "bot");
+            opt.next();
+          } else {
+            gameOver();
+          }
+        };
+        choicesContainer.appendChild(btn);
+      });
+    }
+
+    // -------------------------
+    // START DES VERHÖRS
+    // -------------------------
+
+    addMessage("🎅 Nikolaus: Ich weiß nicht, warum ich hier bin… ich bin kein Täter.", "bot");
+    addMessage("🕵️ Ermittlerin Frost: Dann erklären Sie uns bitte Folgendes.", "bot");
+
+    // Bild vom Nikolaus beim Geschenke packen
+    addImage("img/nikolaus_geschenke.png");
+
+    setTimeout(() => {
+      addMessage("🕵️ Dieses Foto hing am Tatort. Sie und der Weihnachtsmann — zusammen.", "bot");
+      question1();
+    }, 1000);
+
+    // -------------------------
+    // 12 FRAGEN – gemischte Antworten
+    // -------------------------
+
+    function question1() {
+      addQuestion("1️⃣ Erste Frage:", [
+        { text: "Warum klebte das Foto an der Wand des Tatorts?", correct: false },
+        { text: "Ist das ein gefälschtes Bild von Ihnen?", correct: false },
+        {
+          text: "Wann wurde dieses Foto aufgenommen?",
+          correct: true,
+          reply: "🎅 Vor zwei Jahren. Wir packten Geschenke für ein Waisenhaus.",
+          next: question2
+        }
+      ]);
+    }
+
+    function question2() {
+      addQuestion("2️⃣ Wie war Ihr Verhältnis zum Weihnachtsmann?", [
+        { text: "Sie hatten Streit, nicht wahr?", correct: false },
+        {
+          text: "Sie standen ihm nahe, richtig?",
+          correct: true,
+          reply: "🎅 Ja… wir waren Kollegen. Freunde sogar.",
+          next: question3
+        },
+        { text: "Sie wollten seinen Posten übernehmen!", correct: false }
+      ]);
+    }
+
+    function question3() {
+      addQuestion("3️⃣ Wann sahen Sie ihn zuletzt?", [
+        { text: "Ich habe ihn seit Monaten nicht gesehen!", correct: false },
+        {
+          text: "Am Abend vorher, in der Werkstatt?",
+          correct: true,
+          reply: "🎅 Genau… er war gestresst, aber sonst normal.",
+          next: question4
+        },
+        { text: "Vor einer Woche, beim Pokern.", correct: false }
+      ]);
+    }
+
+    function question4() {
+      addQuestion("4️⃣ Warum könnte Ihr Bild am Tatort platziert worden sein?", [
+        { text: "Weil Sie es vergessen haben!", correct: false },
+        {
+          text: "Um Sie absichtlich zu belasten?",
+          correct: true,
+          reply: "🎅 Das… das wäre grausam. Aber möglich.",
+          next: question5
+        },
+        { text: "Weil der Täter Sie liebte!", correct: false }
+      ]);
+    }
+
+    function question5() {
+      addQuestion("5️⃣ Hatten Sie Zugang zur Hütte?", [
+        { text: "Sie wohnten dort heimlich.", correct: false },
+        {
+          text: "Nur wenn Sie eingeladen waren, richtig?",
+          correct: true,
+          reply: "🎅 Ja. Die Hütte war sein privater Rückzugsort.",
+          next: question6
+        },
+        { text: "Sie hatten einen eigenen Schlüssel.", correct: false }
+      ]);
+    }
+
+    function question6() {
+      addQuestion("6️⃣ Wo waren Sie zur Tatzeit?", [
+        { text: "Allein im Wald.", correct: false },
+        {
+          text: "Unter Zeugen – Sie waren in der Werkstatt, oder?",
+          correct: true,
+          reply: "🎅 Genau! Mit fünf anderen Helfern!",
+          next: question7
+        },
+        { text: "Im Rentierstall – ohne Zeugen.", correct: false }
+      ]);
+    }
+
+    function question7() {
+      addQuestion("7️⃣ Hätte jemand Zugriff auf alte Fotos von Ihnen beiden?", [
+        { text: "Nur Sie selbst.", correct: false },
+        {
+          text: "Ja, die Helfer hatten damals alle Zugriff.",
+          correct: true,
+          reply: "🎅 Das stimmt… wir hatten gemeinsame Erinnerungsalben.",
+          next: question8
+        },
+        { text: "Niemand außer dem Täter.", correct: false }
+      ]);
+    }
+
+    function question8() {
+      addQuestion("8️⃣ Glauben Sie, dass der Täter Sie kennt?", [
+        { text: "Der Täter liebt Sie!", correct: false },
+        {
+          text: "Jemand wollte Sie absichtlich reinreiten — richtig?",
+          correct: true,
+          reply: "🎅 Es fühlt sich so an… ja.",
+          next: question9
+        },
+        { text: "Sie sind der einzige Verdächtige!", correct: false }
+      ]);
+    }
+
+    function question9() {
+      addQuestion("9️⃣ Warum wurden Sie nicht direkt vermisst?", [
+        { text: "Weil Sie niemanden interessieren.", correct: false },
+        {
+          text: "Weil Sie an diesem Abend regulär frei hatten?",
+          correct: true,
+          reply: "🎅 Genau… niemand hätte mich dort erwartet.",
+          next: question10
+        },
+        { text: "Weil Sie geflohen sind!", correct: false }
+      ]);
+    }
+
+    function question10() {
+      addQuestion("🔟 Haben Sie Feinde?", [
+        { text: "Den ganzen Nordpol!", correct: false },
+        {
+          text: "Vielleicht jemanden aus der Belegschaft?",
+          correct: true,
+          reply: "🎅 Ein ehemaliger Helfer… wir hatten Streit.",
+          next: question11
+        },
+        { text: "Jeden, der rote Kleidung trägt!", correct: false }
+      ]);
+    }
+
+    function question11() {
+      addQuestion("1️⃣1️⃣ Wäre dieser Helfer in der Lage, das Foto zu benutzen?", [
+        { text: "Nein, er ist Analphabet.", correct: false },
+        {
+          text: "Er kannte den Zugang zu den Erinnerungsalben, oder?",
+          correct: true,
+          reply: "🎅 Ja… er hätte das Bild leicht besorgen können.",
+          next: question12
+        },
+        { text: "Er hasst Fotos!", correct: false }
+      ]);
+    }
+
+    function question12() {
+      addQuestion("1️⃣2️⃣ Abschließend:", [
+        { text: "Sie wollen doch nur Ihr Gesicht reinwaschen!", correct: false },
+        {
+          text: "Sie bestätigen, dass Sie NICHT am Tatort waren?",
+          correct: true,
+          reply: "🎅 Ja. Ich schwöre es.",
+          next: finish
+        },
+        { text: "Sie geben zu, dass Sie es waren!", correct: false }
+      ]);
+    }
+
+    function finish() {
+      clearChoices();
+      addMessage("🕵️ Ermittlerin Frost: Ihre Aussage entlastet Sie vollständig.", "bot");
+      addMessage("🎅 Nikolaus: Danke… ich hoffe, ihr findet ihn.", "bot");
+
+      setTimeout(() => {
+        addMessage("📄 Ihre gestellten Ermittlerfragen:", "bot");
+        askedQuestions.forEach((q, i) => addMessage((i + 1) + ". " + q, "bot"));
+      }, 1000);
+
+      setTimeout(() => {
+        addMessage("✔ Befragung abgeschlossen. Akte freigeschaltet.", "bot");
+        const link = document.createElement("a");
+        link.href = "../akte.html";
+        link.textContent = ">> Akte öffnen <<";
+        link.classList.add("akte-link");
+        chatBox.appendChild(link);
+      }, 2000);
+    }
+  </script>
+</body>
+</html>
