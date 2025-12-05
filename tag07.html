@@ -1,1 +1,427 @@
-Vehör mit Elf
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verhörraum | Tag 6 – Der diensthabende Elf</title>
+
+  <style>
+    body {
+      background-color: #f1ebe0;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .chat-container {
+      background: rgba(20, 20, 20, 0.9);
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 650px;
+      padding: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .chat-box {
+      min-height: 350px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .msg {
+      padding: 8px 12px;
+      border-radius: 10px;
+      margin: 8px 0;
+      max-width: 90%;
+      line-height: 1.4;
+    }
+
+    .msg.bot {
+      background: #2d2d2d;
+      align-self: flex-start;
+    }
+
+    .msg.user {
+      background: #004c97;
+      align-self: flex-end;
+    }
+
+    .choices {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .choices button {
+      background: #004c97;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-size: 15px;
+    }
+
+    .choices button:hover {
+      background: #0073e6;
+    }
+
+    a.akte-link {
+      display: inline-block;
+      margin-top: 15px;
+      color: #00ffcc;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    a.akte-link:hover {
+      text-decoration: underline;
+    }
+
+    .chat-box::-webkit-scrollbar { width: 8px; }
+    .chat-box::-webkit-scrollbar-thumb {
+      background: #333;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="chat-container">
+    <div id="chat-box" class="chat-box"></div>
+    <div id="choices" class="choices"></div>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById("chat-box");
+    const choicesContainer = document.getElementById("choices");
+
+    let askedQuestions = [];
+
+    function addMessage(text, sender = "bot") {
+      const msg = document.createElement("div");
+      msg.classList.add("msg", sender);
+      msg.textContent = text;
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function clearChoices() {
+      choicesContainer.innerHTML = "";
+    }
+
+    function gameOver() {
+      clearChoices();
+      addMessage("🧝‍♂️ Elf: Also wirklich… wenn Sie so fragen, haben wir hier nichts mehr zu besprechen.", "bot");
+      addMessage("❌ Falsche Frage. Die Spur verläuft im Sande. Das Verhör muss neu begonnen werden.", "bot");
+
+      const restart = document.createElement("button");
+      restart.textContent = "🔁 Verhör neu starten";
+      restart.onclick = () => location.reload();
+      choicesContainer.appendChild(restart);
+    }
+
+    function addQuestion(stepLabel, options) {
+      addMessage(stepLabel, "bot");
+      clearChoices();
+
+      options.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.textContent = opt.text;   // vom Ermittler gewählt
+        btn.onclick = () => {
+          askedQuestions.push(opt.text);
+          addMessage("🕵️ " + opt.text, "user");
+          if (opt.correct) {
+            if (opt.reply) addMessage(opt.reply, "bot");
+            opt.next();
+          } else {
+            gameOver();
+          }
+        };
+        choicesContainer.appendChild(btn);
+      });
+    }
+
+    // -------------------------
+    // START – erst Ermittler (1.), dann Elf (2.)
+    // -------------------------
+
+    addMessage("🕵️ Ermittlerin Frost: Setzen Sie sich, bitte. Wir gehen den Abend Schritt für Schritt durch.", "bot");
+    setTimeout(() => {
+      addMessage("🧝‍♂️ Elf: Wenn es sein muss… aber ich habe dem Weihnachtsmann immer loyal gedient.", "bot");
+      question1();
+    }, 1200);
+
+    // ==========================
+    // 12 Schritte – MC-Fragen für den Ermittler
+    // ==========================
+
+    function question1() {
+      addQuestion("1️⃣ Einstieg in die Befragung:", [
+        {
+          text: "Erzählen Sie mir zuerst von Ihrer Rolle als persönlicher Assistent des Weihnachtsmannes.",
+          correct: true,
+          reply: "🧝‍♂️ Ich plane seinen Tagesablauf, organisiere Besuche, halte ungebetene Gäste fern.",
+          next: question2
+        },
+        {
+          text: "Warum sind Sie überhaupt noch hier und nicht im Arrest?",
+          correct: false
+        },
+        {
+          text: "Wussten Sie, dass wir eine Spur gegen Sie haben?",
+          correct: false
+        }
+      ]);
+    }
+
+    function question2() {
+      addQuestion("2️⃣ Sie wollen mehr über den Alltag wissen:", [
+        {
+          text: "Wie viele Geschenke stehlen Sie im Schnitt pro Jahr?",
+          correct: false
+        },
+         {
+          text: "Wer hat üblicherweise Zutritt zum Haus des Weihnachtsmannes?",
+          correct: true,
+          reply: "🧝‍♂️ Der Weihnachtsmann und ich – sonst niemand.",
+          next: question3
+        },
+        {
+          text: "Warum lassen Sie jeden einfach hereinspazieren?",
+          correct: false
+        }
+      ]);
+    }
+
+    function question3() {
+      addQuestion("3️⃣ Jetzt der Abend des Vorfalls:", [
+        {
+          text: "Wo waren Sie an dem Abend, als der Weihnachtsmann ermordet wurde?",
+          correct: true,
+          reply: "🧝‍♂️ In der Nähe der Hütte – ich habe die letzten Listen im Archiv, 4 Häuser neben dem Wohnhaus des Weihnachtsmannes, geprüft. Und dann bin ich heim",
+          next: question4
+        },
+        {
+          text: "Warum sind Sie an diesem Abend früher nach Hause gegangen?",
+          correct: false
+        },
+        {
+          text: "Sie waren doch sicher allein im Wald unterwegs, oder?",
+          correct: false
+        }
+      ]);
+    }
+
+    function question4() {
+      addQuestion("4️⃣ Sie bauen Spannung auf, ohne zu viel zu verraten:", [
+        {
+          text: "Sie haben sicher überhaupt nicht hingesehen, stimmt’s?",
+          correct: false
+        },
+        {
+          text: "War es der lauteste Abend des Jahres?",
+          correct: false
+        },
+         {
+          text: "Ist Ihnen an diesem Abend irgendetwas an der Hütte ungewöhnlich vorgekommen?",
+          correct: true,
+          reply: "🧝‍♂️ Das Licht brannte länger als sonst… und es war stiller als gewöhnlich.",
+          next: question5
+        }
+      ]);
+    }
+
+    function question5() {
+      addQuestion("5️⃣ Nun lenken Sie auf Besucher, ohne die Frau zu nennen:", [
+        {
+          text: "Gab es in letzter Zeit ungewöhnliche Besucher oder eine Verehrerin am Haus?",
+          correct: true,
+          reply: "🧝‍♂️ Nein. Niemand Fremdes. Schon gar keine Frau.",
+          next: question6
+        },
+        {
+          text: "Sind ständig Touristengruppen durch das Haus gelaufen?",
+          correct: false
+        },
+        {
+          text: "Haben Sie Fans autogrammsuchend reingelassen?",
+          correct: false
+        }
+      ]);
+    }
+
+    function question6() {
+      addQuestion("6️⃣ Der Elf ist gekränkt – Sie tasten sich näher heran:", [
+        {
+          text: "Sie klingen sehr bestimmt. Warum schließen Sie eine Frau so kategorisch aus?",
+          correct: true,
+          reply: "🧝‍♂️ Weil ich jeden kenne, der dort ein und aus geht. Ich bin dafür verantwortlich.",
+          next: question7
+        },
+        {
+          text: "Sind Frauen für Sie grundsätzlich verdächtig?",
+          correct: false
+        },
+        {
+          text: "Haben Sie Angst vor Fremden?",
+          correct: false
+        }
+      ]);
+    }
+
+    function question7() {
+      addQuestion("7️⃣ Jetzt bringen Sie behutsam die Ermittlung ins Spiel:", [
+        {
+          text: "Wenn wir Spuren finden, dann lügen Sie, oder?",
+          correct: false
+        },
+        {
+          text: "Die Spurenlage spricht von einer weiteren Frau. Was sagen Sie dazu?",
+          correct: true,
+          reply: "🧝‍♂️ Dann sind Ihre Spuren falsch. Ich habe niemand Fremdes gesehen.",
+          next: question8
+        },
+        {
+          text: "Wir brauchen keine Spuren, wir haben doch Sie.",
+          correct: false
+        }
+      ]);
+    }
+
+    function question8() {
+      addQuestion("8️⃣ Sie formulieren die DNA-Frage, ohne ihn direkt niederzumachen:", [   
+        {
+          text: "Die DNA lügt nicht – also tun Sie es.",
+          correct: false
+        },
+        {
+          text: "Sie haben diese Frau doch selbst hereingelassen!",
+          correct: false
+        },
+         {
+          text: "Unsere Analyse deutet auf eine bisher unbekannte Frau im Haus hin. Können Sie sich das erklären?",
+          correct: true,
+          reply: "🧝‍♂️ Nein. Und es verletzt mich, dass Sie mir nicht glauben.",
+          next: question9
+        }
+      ]);
+    }
+
+    function question9() {
+      addQuestion("9️⃣ Sie bleiben sachlich, obwohl er gekränkt ist:", [
+        {
+          text: "Gibt es Gegenstände im Haus, die von außerhalb kommen könnten – Pakete, Lieferungen, Geschenke?",
+          correct: true,
+          reply: "🧝‍♂️ Natürlich. Pakete, Briefe, Spielsachen. Aber ich kontrolliere, wer sie auspackt.",
+          next: question10
+        },
+        {
+          text: "Wer von euch Elfen fälscht üblicherweise Spuren?",
+          correct: false
+        },
+        {
+          text: "Haben Sie heimlich Liebesbriefe im Haus verteilt?",
+          correct: false
+        }
+      ]);
+    }
+
+    function question10() {
+      addQuestion("🔟 Sie untersuchen die Möglichkeit eines indirekten DNA-Transfers:", [
+        {
+          text: "Könnte die fremde DNA über solche Lieferungen ins Haus gelangt sein, ohne dass die Person selbst dort war?",
+          correct: true,
+          reply: "🧝‍♂️ …wenn jemand vorher damit zu tun hatte, vielleicht. Aber hier war niemand.",
+          next: question11
+        },
+        {
+          text: "Also haben Sie die Frau persönlich hereingetragen?",
+          correct: false
+        },
+        {
+          text: "Sie wollen uns nur verwirren, oder?",
+          correct: false
+        }
+      ]);
+    }
+
+    function question11() {
+      addQuestion("1️⃣1️⃣ Sie testen seine Loyalität zum Weihnachtsmann:", [
+        {
+          text: "Wäre es Ihnen egal, wer alles ins Haus läuft?",
+          correct: false
+        },
+        {
+          text: "Würden Sie jemals zulassen, dass jemand Unbekanntes zum Weihnachtsmann vordringt?",
+          correct: true,
+          reply: "🧝‍♂️ Niemals. Das ist mein Auftrag. Und den nehme ich ernst.",
+          next: question12
+        },
+        {
+          text: "Haben Sie schon öfter unbefugte Personen durchgewunken?",
+          correct: false
+        }
+      ]);
+    }
+
+    function question12() {
+      addQuestion("1️⃣2️⃣ Abschlussfrage – Sie ziehen ein Fazit:", [
+        {
+          text: "Sie bleiben Hauptverdächtiger, egal was Sie sagen.",
+          correct: false
+        },
+        {
+          text: "Wir sind hier fertig, Sie sind schuldig.",
+          correct: false
+        },
+        {
+          text: "Wenn Ihre Aussage stimmt, dann müssen wir die Spur der Frau anders erklären. Können Sie mit weiteren Fragen rechnen?",
+          correct: true,
+          reply: "🧝‍♂️ Wenn es dem Weihnachtsmann hilft – ja. Aber ich lasse mir nicht einreden, was nie geschehen ist.",
+          next: finish
+        },
+      ]);
+    }
+
+    // -------------------------
+    // ABSCHLUSS
+    // -------------------------
+    function finish() {
+      clearChoices();
+      addMessage("🕵️ Ermittlerin Frost: Ihre Aussage ist konsistent – aber sie widerspricht der Spur einer Frau.", "bot");
+      addMessage("🧝‍♂️ Elf: Dann suchen Sie bei der Spur. Nicht bei mir.", "bot");
+
+      setTimeout(() => {
+        addMessage("📄 Ihre gewählten Ermittler-Fragen:", "bot");
+        askedQuestions.forEach((q, i) => {
+          addMessage((i + 1) + ". " + q, "bot");
+        });
+      }, 900);
+
+      setTimeout(() => {
+        addMessage("✔ Befragung abgeschlossen. Eine neue Akte wurde freigeschaltet.", "bot");
+        const link = document.createElement("a");
+        link.href = "../akte.html";
+        link.textContent = ">> Akte öffnen <<";
+        link.classList.add("akte-link");
+        chatBox.appendChild(link);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }, 1900);
+    }
+
+  </script>
+</body>
+</html>
