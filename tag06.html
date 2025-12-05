@@ -113,15 +113,15 @@
   <div class="container">
     <!-- DNA-Proben -->
     <div class="item" draggable="true" id="probeA">🧫 DNA-Probe A<br>(Haarwurzel)</div>
-    <div class="item" draggable="true" id="probeB">🧬 DNA-Probe B<br>(Speichelspur)</div>
+    <div class="item" draggable="true" id="probeB">🧬 DNA-Probe B<br>(Fingerabdruck)</div>
     <div class="item" draggable="true" id="probeC">🧪 DNA-Probe C<br>(Blutprobe)</div>
   </div>
 
   <div class="container">
     <!-- Individuen -->
-    <div class="dropzone" id="anna">Anna Müller</div>
-    <div class="dropzone" id="ben">Ben Krause</div>
-    <div class="dropzone" id="sofia">Sofia Lehmann</div>
+    <div class="dropzone" id="anna">Weihnachtsmann, am Boden</div>
+    <div class="dropzone" id="ben">Elf, Bediensteter</div>
+    <div class="dropzone" id="sofia">Frau, Unbekannte</div>
   </div>
 
   <div id="result"></div>
@@ -184,13 +184,15 @@
       if (correctAssignments === 3) {
         result.innerHTML = "✅ Alle DNA-Proben korrekt zugeordnet!<br>Die genetische Analyse ist abgeschlossen.";
         setTimeout(() => {
-          result.innerHTML += "<br><br>📂 <a class='akte-link' href='../akte.html'>> Bericht öffnen <<</a>";
+          result.innerHTML += "<br><br>📂  <p>Es scheint als bringt uns jeder neue Hinweis, noch mehr Fragen.  Wer ist nur diese Frau, sie taucht in keiner unserer Datenbanken auf. Wir haben jedoch einen weiteren Anhaltspunkt, den bediensteten Wichtel, diesen gilt es morgen zu befragen.</p> <a class='akte-link' href='../akte.html'>> Bericht öffnen <<</a>";
         }, 1500);
       }
     }
   </script>
+  
+ 
 
 </body>
 </html>
 
-// 1 Weihnachtsmann am Boden 2 Rentier 3 Unbekannte Frau  
+
