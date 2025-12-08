@@ -1,1 +1,240 @@
-Vehör mit ELF 2
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Falltag 08 – Massaker im Wagen</title>
+  <style>
+    :root {
+      --paper: #f1ebe0;
+      --ink: #111;
+      --accent: #c1272d;
+      --muted: #666;
+    }
+    body {
+      margin: 0;
+      font-family: 'Courier New', monospace;
+      background: var(--paper);
+      color: var(--ink);
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .scene {
+      position: relative;
+      width: 100%;
+      height: calc(100% - 170px);
+
+      /* 👉 HIER wird dein Bild eingebunden */
+      background: url("img/tatort_auto_tag08.png") center center / cover no-repeat;
+
+      border: 4px solid rgba(0, 0, 0, 0.25);
+    }
+
+    .hotspot {
+      position: absolute;
+      width: 34px;
+      height: 34px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      border: 2px solid #fff;
+      transition: transform 0.2s;
+    }
+    .hotspot:hover { transform: scale(1.2); }
+
+    .popup {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .popup-content {
+      background: var(--paper);
+      border-radius: 8px;
+      padding: 24px;
+      max-width: 520px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      animation: fadeIn 0.25s ease-out;
+    }
+    .popup-content h2 {
+      margin-top: 0;
+      color: var(--accent);
+    }
+    .popup-content p {
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    .close-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+    .close-btn:hover { background: #a31f24; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    .zurueck {
+      position: absolute;
+      bottom: 18px;
+      left: 18px;
+      background: rgba(255,255,255,0.85);
+      text-decoration: none;
+      padding: 6px 12px;
+      color: #000;
+      border-radius: 6px;
+      border: 1px solid rgba(0,0,0,0.2);
+      font-size: 14px;
+    }
+    .zurueck:hover { background: #fff; }
+
+    /* Formular unten */
+    #ermittlungsformular {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: rgba(241,235,224,0.96);
+      border-top: 1px solid rgba(0,0,0,0.2);
+      padding: 20px 0;
+      text-align: center;
+      font-family: 'Courier New', monospace;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="scene">
+    <!-- Positionen grob an Bild ausgerichtet:
+         A = angebissener Keks, B = Zigarette,
+         C/D = Spuren, die auf mehrere Täter hindeuten -->
+    <div class="hotspot" style="top: 72%; left: 42%;" data-target="popupA">A</div>
+    <div class="hotspot" style="top: 75%; left: 52%;" data-target="popupB">B</div>
+    <div class="hotspot" style="top: 40%; left: 18%;" data-target="popupC">C</div>
+    <div class="hotspot" style="top: 58%; left: 70%;" data-target="popupD">D</div>
+
+    <a href="../akte.html" class="zurueck">← Zurück zur Fallakte</a>
+  </div>
+
+  <!-- Popup A – angebissener Keks -->
+  <div class="popup" id="popupA">
+    <div class="popup-content">
+      <h2>Beweisstück A – Angebissener Keks</h2>
+      <p>Auf dem Beifahrersitz liegt ein halb angebissener Keks.  
+      Am Abdruck lässt sich deutlich eine eher schmale Zahnreihe erkennen –  
+      kein Kindergebiss, sondern eine erwachsene Frau.  
+      Krümel im Anschnallbereich weisen darauf hin, dass sie während der Fahrt gegessen hat.</p>
+      <button class="close-btn" data-close>Schließen</button>
+    </div>
+  </div>
+
+  <!-- Popup B – Zigarette -->
+  <div class="popup" id="popupB">
+    <div class="popup-content">
+      <h2>Beweisstück B – Gerauchte Zigarette</h2>
+      <p>Direkt neben dem Keks wurde eine ausgedrückte Zigarette gefunden.  
+      Lippenstiftspuren am Filter bestätigen: Die Zigarette wurde von einer Frau geraucht.  
+      Die Marke ist in der Region selten – sie wird häufig in Großstädten verkauft.</p>
+      <button class="close-btn" data-close>Schließen</button>
+    </div>
+  </div>
+
+  <!-- Popup C – Hinweis auf mehrere Täter (Blutverteilung/Fahrersitz) -->
+  <div class="popup" id="popupC">
+    <div class="popup-content">
+      <h2>Beweisstück C – Blutspuren am Lenkrad</h2>
+      <p>Am Lenkrad finden sich zwei unterschiedliche Wischrichtungen und Kontaktflächen.  
+      Die Analyse legt nahe, dass mindestens zwei Personen den Fahrerplatz nach der Tat berührt haben.  
+      Eine Spur wirkt hektisch verschmiert – als hätte jemand versucht, etwas zu verstellen oder zu durchsuchen.</p>
+      <button class="close-btn" data-close>Schließen</button>
+    </div>
+  </div>
+
+  <!-- Popup D – Hinweis auf Gruppenverbrechen (Innenraum) -->
+  <div class="popup" id="popupD">
+    <div class="popup-content">
+      <h2>Beweisstück D – Unstimmige Sitzpositionen</h2>
+      <p>Die Schienen der Vordersitze zeigen frische Kratzspuren in zwei verschiedenen Positionen.  
+      Jemand mit deutlich anderer Körpergröße muss den Sitz nach der Tat verstellt haben.  
+      In Kombination mit den Blutmustern deutet dies auf ein koordinierendes Vorgehen  
+      von mindestens zwei Beteiligten hin.</p>
+      <button class="close-btn" data-close>Schließen</button>
+    </div>
+  </div>
+
+  <!-- Ermittlungsformular -->
+  <div id="ermittlungsformular">
+    <h2 style="margin:0 0 10px 0;color:#111;">Ermittlungsnotiz – Was ist hier passiert?</h2>
+    <p style="margin:0 0 12px 0;color:#333;">Wer spielte bei dem Massaker im Wagen welche Rolle?</p>
+    
+    <input id="antwort" type="text" placeholder="Ihre Vermutung eingeben …"
+           style="width:60%;max-width:400px;padding:8px;border:1px solid #999;border-radius:4px;background:#fff;font-size:15px;">
+    <button id="pruefenBtn"
+            style="margin-left:8px;padding:8px 14px;border:none;border-radius:4px;background:#c1272d;color:#fff;cursor:pointer;">Antwort prüfen</button>
+    
+    <p id="rueckmeldung" style="margin-top:15px;color:#333;font-style:italic;"></p>
+  </div>
+
+  <script>
+    const hotspots = document.querySelectorAll('.hotspot');
+    const popups = document.querySelectorAll('.popup');
+    const closeButtons = document.querySelectorAll('[data-close]');
+
+    hotspots.forEach(h => {
+      h.addEventListener('click', () => {
+        const target = document.getElementById(h.dataset.target);
+        if (target) target.style.display = 'flex';
+      });
+    });
+
+    closeButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.closest('.popup').style.display = 'none';
+      });
+    });
+
+    popups.forEach(p => {
+      p.addEventListener('click', e => {
+        if (e.target === p) p.style.display = 'none';
+      });
+    });
+
+    // einfache Antwortprüfung (Du kannst hier deine Lösung eintragen)
+    const pruefenBtn = document.getElementById('pruefenBtn');
+    const rueckmeldung = document.getElementById('rueckmeldung');
+
+    pruefenBtn.addEventListener('click', () => {
+      const eingabe = document.getElementById('antwort').value.trim().toLowerCase();
+
+      // Beispiel-Lösung: "gruppenverbrechen" o.Ä.
+      const richtigeAntworten = ['gruppenverbrechen','mindestens zwei täter','zwei täter'];
+
+      if (richtigeAntworten.includes(eingabe)) {
+        rueckmeldung.textContent = '✔️ Korrekt – alles deutet auf ein koordiniertes Gruppenverbrechen hin.';
+        rueckmeldung.style.color = '#0b6b1c';
+      } else if (eingabe === '') {
+        rueckmeldung.textContent = 'Bitte geben Sie eine Vermutung ein.';
+        rueckmeldung.style.color = '#333';
+      } else {
+        rueckmeldung.textContent = 'Hinweis notiert. Prüfen Sie die Spuren noch einmal genauer …';
+        rueckmeldung.style.color = '#a31f24';
+      }
+    });
+  </script>
+</body>
+</html>
