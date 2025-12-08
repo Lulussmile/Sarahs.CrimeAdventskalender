@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Ermittlungszentrale | Tag 9 – Die Gruppe</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      background-color: #f1ebe0;
+      font-family: "Courier New", monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .chat-container {
+      background: rgba(20, 20, 20, 0.95);
+      color: #fff;
+      width: 92%;
+      max-width: 650px;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .chat-box {
+      min-height: 340px;
+      overflow-y: auto;
+    }
+
+    .msg {
+      margin: 8px 0;
+      padding: 10px;
+      border-radius: 10px;
+      max-width: 90%;
+    }
+
+    .bot { background: #2d2d2d; }
+    .user { background: #004c97; align-self: flex-end; }
+
+    .choices {
+      margin-top: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    button {
+      padding: 10px;
+      background: #004c97;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    button:hover { background: #0073e6; }
+
+    a {
+      color: #00ffcc;
+      font-weight: bold;
+      text-decoration: none;
+      margin-top: 15px;
+      display: inline-block;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="chat-container">
+  <div id="chat" class="chat-box"></div>
+  <div id="choices" class="choices"></div>
+</div>
+
+<script>
+const chat = document.getElementById("chat");
+const choices = document.getElementById("choices");
+
+// ✅ SHUFFLE-FUNKTION – AB JETZT STANDARD FÜR ALLE SPIELE
+function shuffle(array) {
+  return array.sort(() => Math.random() - 0.5);
+}
+
+function msg(text, type="bot") {
+  const div = document.createElement("div");
+  div.className = "msg " + type;
+  div.textContent = text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function clearChoices() {
+  choices.innerHTML = "";
+}
+
+function gameOver() {
+  clearChoices();
+  msg("❌ Diese Entscheidung bringt Sie keinen Schritt weiter.");
+  const btn = document.createElement("button");
+  btn.textContent = "🔁 Analyse neu beginnen";
+  btn.onclick = () => location.reload();
+  choices.appendChild(btn);
+}
+
+function ask(text, options) {
+  msg(text);
+  clearChoices();
+  shuffle(options).forEach(o => {   // ✅ AUTOMATISCHES MISCHEN
+    const b = document.createElement("button");
+    b.textContent = o.text;
+    b.onclick = () => {
+      msg("🕵️ " + o.text, "user");
+      if (o.correct) {
+        if (o.reply) msg(o.reply);
+        o.next();
+      } else {
+        gameOver();
+      }
+    };
+    choices.appendChild(b);
+  });
+}
+
+// ---------------- START ----------------
+
+msg("🧩 Ermittlungszentrale, 03:12 Uhr.");
+msg("🕵️ Frost: Zwei Spuren. Zwei verschiedene Hinweisarten. Und ein zerstörtes Auto.");
+msg("🕵️ Analyst: Das war kein Einzeltäter. Das war koordiniert.");
+step1();
+
+// ---------------- SCHRITTE ----------------
+
+function step1() {
+  ask("1️⃣ Was analysieren Sie zuerst?", [
+    { text: "Den angebissenen Keks.", correct:true, reply:"🧪 Speichelanalyse läuft.", next: step2 },
+    { text: "Die Farbe des Autos.", correct:false },
+    { text: "Die Sitzbezüge.", correct:false }
+  ]);
+}
+
+function step2() {
+  ask("2️⃣ Das Ergebnis kommt rein:", [
+    { text: "Die DNA gehört zu einer unbekannten Frau.", correct:true, reply:"🧬 Treffer bestätigt.", next: step3 },
+    { text: "Die DNA gehört dem Opfer.", correct:false },
+    { text: "Keine DNA vorhanden.", correct:false }
+  ]);
+}
+
+function step3() {
+  ask("3️⃣ Welche zweite Spur ist entscheidend?", [
+    { text: "Die gerauchte Zigarette.", correct:true, reply:"🚬 Nikotin + Fremd-DNA eindeutig.", next: step4 },
+    { text: "Der Außenspiegel.", correct:false },
+    { text: "Die Autoradio-Frequenz.", correct:false }
+  ]);
+}
+
+function step4() {
+  ask("4️⃣ Was lässt sich daraus schließen?", [
+    { text: "Mindestens zwei Täter waren vor Ort.", correct:true, reply:"👥 Gruppenbeteiligung bestätigt.", next: step5 },
+    { text: "Das Opfer war allein.", correct:false },
+    { text: "Der Fall war ein Unfall.", correct:false }
+  ]);
+}
+
+function step5() {
+  ask("5️⃣ Welche weitere Spur stützt diese Annahme?", [
+    { text: "Zwei verschiedene Schuhabdrücke am Auto.", correct:true, reply:"👟 Zwei unterschiedliche Profile.", next: step6 },
+    { text: "Eine zerbrochene Flasche.", correct:false },
+    { text: "Ein offenes Fenster.", correct:false }
+  ]);
+}
+
+function step6() {
+  ask("6️⃣ Was bedeutet das für den Weihnachtsmann-Fall?", [
+    { text: "Der Täter hatte Helfer.", correct:true, reply:"🔗 Verbrechen vernetzt.", next: step7 },
+    { text: "Es war eine Kurzschlusshandlung.", correct:false },
+    { text: "Der Täter handelte spontan.", correct:false }
+  ]);
+}
+
+// ✅ AB HIER JETZT ENDGÜLTIG IRREFÜHREND & OFFEN – KEINE AUFLÖSUNG MEHR
+
+function step7() {
+  ask("7️⃣ Welche Rolle spielt die unbekannte Frau jetzt?", [
+    { text: "Sie bewegt sich innerhalb des Täterumfelds.", correct:true, reply:"🧩 Ihre Rolle bleibt unklar.", next: step8 },
+    { text: "Sie war zufällig vor Ort.", correct:false },
+    { text: "Sie wird ausgeschlossen.", correct:false }
+  ]);
+}
+
+function step8() {
+  ask("8️⃣ Was bedeutet ihre doppelte Spur für die Ermittlungen?", [
+    { text: "Sie taucht in mehreren Zusammenhängen auf.", correct:true, reply:"📍 Mehrere Tatorte – gleiche Verbindung.", next: step9 },
+    { text: "Die Spur verliert an Bedeutung.", correct:false },
+    { text: "Sie kann ignoriert werden.", correct:false }
+  ]);
+}
+
+function step9() {
+  ask("9️⃣ Welche neue Gefahr ergibt sich daraus?", [
+    { text: "Die Strukturen hinter dem Täter sind größer als gedacht.", correct:true, reply:"⚠ Die Dimension verändert sich.", next: finish },
+    { text: "Die Gruppe löst sich auf.", correct:false },
+    { text: "Es folgt keine weitere Tat.", correct:false }
+  ]);
+}
+
+// ---------------- ABSCHLUSS ----------------
+
+function finish() {
+  clearChoices();
+  msg("🕵️ Frost: Das hier ist größer als nur ein einzelner Täter.");
+  msg("🕵️ Analyst: Und wir kennen das Ende noch nicht.");
+  msg("📂 TAG 9 ABGESCHLOSSEN – Die Strukturen im Hintergrund verdichten sich.");
+
+  const link = document.createElement("a");
+  link.href = "../akte.html";
+  link.textContent = ">> Zur Akte <<";
+  choices.appendChild(link);
+}
+</script>
+
+</body>
+</html>
