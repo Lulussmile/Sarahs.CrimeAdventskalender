@@ -19,16 +19,33 @@
       height: 100vh;
       overflow: hidden;
     }
-
-    .scene img,
-img.evidence {
-  max-width: 100%;
+.scene {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
   height: auto;
-  object-fit: contain;
-  border-radius: 8px;
-  display: block;
-  margin: 10px auto;
+  aspect-ratio: 16 / 9;   /* Querformat erzwingen */
+  margin: 0 auto;
+  background: url("tatort8.png") center center no-repeat;
+  background-size: contain; /* WICHTIG: Bild passt sich an */
+  border: 4px solid rgba(0, 0, 0, 0.2);
 }
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .scene {
+    max-width: 95%;
+  }
+}
+
+/* Handy */
+@media (max-width: 600px) {
+  .scene {
+    max-width: 100%;
+    border-width: 2px;
+  }
+}
+
 
     .hotspot {
       position: absolute;
@@ -179,7 +196,7 @@ img.evidence {
   <!-- Ermittlungsformular -->
   <div id="ermittlungsformular">
     <h2 style="margin:0 0 10px 0;color:#111;">Ermittlungsnotiz – Was ist hier passiert?</h2>
-    <p style="margin:0 0 12px 0;color:#333;">Wer spielte bei dem Massaker im Wagen welche Rolle?</p>
+    <p style="margin:0 0 12px 0;color:#333;">Wer war der Mörder, oder die Mörder</p>
     
     <input id="antwort" type="text" placeholder="Ihre Vermutung eingeben …"
            style="width:60%;max-width:400px;padding:8px;border:1px solid #999;border-radius:4px;background:#fff;font-size:15px;">
@@ -221,7 +238,7 @@ img.evidence {
       const eingabe = document.getElementById('antwort').value.trim().toLowerCase();
 
       // Beispiel-Lösung: "gruppenverbrechen" o.Ä.
-      const richtigeAntworten = ['gruppenverbrechen','mindestens zwei täter','zwei täter'];
+      const richtigeAntworten = ['gruppenverbrechen','mindestens zwei täter','zwei täter', 'Die unbekannte und noch ein unbekannter'];
 
       if (richtigeAntworten.includes(eingabe)) {
         rueckmeldung.textContent = '✔️ Korrekt – alles deutet auf ein koordiniertes Gruppenverbrechen hin.';
