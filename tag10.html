@@ -1,66 +1,231 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Code-Knacker | Platzhalter</title>
+  <meta charset="UTF-8">
+  <title>Tatort | Tag 11 – Die Lagerhalle</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
     body {
-      background-color: #0a0a0a;
-      color: #00ffcc;
-      font-family: "Courier New", monospace;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
       margin: 0;
+      font-family: "Courier New", monospace;
+      background: #0f0f0f;
+      color: #111;
     }
 
-    .terminal {
-      background: rgba(10, 20, 20, 0.9);
-      border: 1px solid #00ffcc;
-      border-radius: 12px;
-      width: 90%;
-      max-width: 600px;
-      padding: 25px;
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    /* ===== FALLERKLÄRUNG OBEN ===== */
+    .fallbox {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(241,235,224,0.95);
+      padding: 14px;
       text-align: center;
+      z-index: 15;
+      border-bottom: 1px solid #aaa;
     }
 
-    .headline {
-      font-size: 1.2rem;
-      color: #00ffcc;
-      margin-bottom: 20px;
+    /* ===== TATORT ===== */
+    .scene {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      background: url('img/lagerhalle_tatort.jpg') center/cover no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-top: 100px;
     }
 
-    .code-box {
-      background: #001a1a;
-      border: 1px solid #004c4c;
-      padding: 20px;
+    .hotspot {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      background: #c1272d;
+      border-radius: 50%;
+      color: #fff;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 2px solid #fff;
+    }
+
+    .popup {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+    }
+
+    .content {
+      background: #f1ebe0;
+      padding: 24px;
+      max-width: 500px;
       border-radius: 8px;
-      font-size: 1.1rem;
     }
 
-    .info {
-      margin-top: 20px;
-      font-size: 1rem;
-      opacity: 0.8;
+    .content h2 {
+      margin-top: 0;
+      color: #c1272d;
+    }
+
+    button {
+      margin-top: 12px;
+      padding: 8px 14px;
+      border: none;
+      background: #c1272d;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    /* ===== NOTIZ UNTEN ===== */
+    .notiz {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: rgba(241,235,224,0.95);
+      padding: 14px;
+      text-align: center;
+      z-index: 10;
+      border-top: 1px solid #aaa;
+    }
+
+    .notiz input {
+      width: 60%;
+      padding: 8px;
+      font-family: "Courier New", monospace;
+      border: 1px solid #999;
+    }
+
+    .feedback {
+      margin-top: 10px;
+      font-style: italic;
     }
   </style>
 </head>
 
 <body>
-  <div class="terminal">
-    <div class="headline">💻 Abteilung Digitale Forensik</div>
 
-    <div class="code-box">
-      <p><strong>Systemmeldung:</strong></p>
-      <p>Tut mir Leid, wir haben leider noch keine neuen Erkenntnisse.</p>
-    </div>
+<!-- ===== FALLERKLÄRUNG ===== -->
+<div class="fallbox">
+  <strong>Fallübersicht:</strong><br>
+  In der Lagerhalle wurde eine tote Person im Fahrzeug gefunden.  
+  Am Tatort befinden sich eindeutige Spuren der unbekannten Frau.
+</div>
 
-    <div class="info">
-      Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut.
-    </div>
+<!-- ===== TATORT ===== -->
+<div class="scene">
+
+  <div class="hotspot" style="top:45%; left:30%;" data-target="a">A</div>
+  <div class="hotspot" style="top:60%; left:55%;" data-target="b">B</div>
+  <div class="hotspot" style="top:38%; left:70%;" data-target="c">C</div>
+</div>
+
+<!-- ===== BEWEISE ===== -->
+
+<div class="popup" id="a">
+  <div class="content">
+    <h2>Beweis A – Schlammige Schuhspur</h2>
+    <p>
+      Eine breite Schuhspur führt bis in die Halle hinein –  
+      aber keine führt wieder hinaus.  
+      <br><br>
+      Der Schlamm stammt aus einem Waldgebiet nördlich des Nordpols.
+    </p>
+    <button onclick="closeAll()">Schließen</button>
   </div>
+</div>
+
+<div class="popup" id="b">
+  <div class="content">
+    <h2>Beweis B – Funkgerät</h2>
+    <p>
+      Letzte Aufnahme:
+      <br><br>
+      <em>„…ich bin drin. Er ist tot. Die Frau meldet sich gleich wieder.“</em>
+      <br><br>
+      Stimme: weiblich.  
+      Keine Übereinstimmung mit bekannten Personen.
+    </p>
+    <button onclick="closeAll()">Schließen</button>
+  </div>
+</div>
+
+<div class="popup" id="c">
+  <div class="content">
+    <h2>Beweis C – Roter Stofffetzen</h2>
+    <p>
+      Kein Weihnachtssymbol.  
+      <br><br>
+      Material identisch mit dem Mantel des falschen Weihnachtsmannes.
+    </p>
+    <button onclick="closeAll()">Schließen</button>
+  </div>
+</div>
+
+<!-- ===== NOTIZFELD + LÖSUNG ===== -->
+
+<div class="notiz">
+  <strong>Ermittlungsfrage:</strong><br>
+  Welche Rolle spielt die unbekannte Frau in dieser Konstellation?<br><br>
+
+  <input id="antwort" placeholder="Ein Wort eingeben..." />
+  <button onclick="pruefen()">Antwort prüfen</button>
+
+  <div id="feedback" class="feedback"></div>
+</div>
+
+<script>
+  const spots = document.querySelectorAll('.hotspot');
+  const popups = document.querySelectorAll('.popup');
+
+  spots.forEach(s => {
+    s.onclick = () => {
+      document.getElementById(s.dataset.target).style.display = "flex";
+    };
+  });
+
+  function closeAll() {
+    popups.forEach(p => p.style.display = "none");
+  }
+
+  // ===== LÖSUNGSPRÜFUNG =====
+  function pruefen() {
+    const eingabe = document.getElementById("antwort").value.toLowerCase().trim();
+    const feedback = document.getElementById("feedback");
+
+    const loesungen = [
+      "mittäterin",
+      "komparsin",
+      "beteiligte",
+      "helferin",
+      "täterin",
+      "komplizin",
+      "akteurin",
+      "Haupttäterin",
+      "Anführerin",
+      "assistentin"
+      
+    ];
+
+    if (loesungen.includes(eingabe)) {
+      feedback.style.color = "green";
+      feedback.textContent = "✔️ Richtig. Die Frau ist Teil des Verbrechens – aber noch nicht enttarnt.";
+    } else if (eingabe === "") {
+      feedback.style.color = "#333";
+      feedback.textContent = "Bitte geben Sie ein Wort ein.";
+    } else {
+      feedback.style.color = "#a31f24";
+      feedback.textContent = "❌ Falsch. Diese Rolle passt nicht zur Spur.";
+    }
+  }
+</script>
+
 </body>
 </html>
